@@ -39,6 +39,39 @@ int GRBaddconstr (GRBmodel *model,
                  double rhs,
                  const char *constrname);
 
+int GRBgetintattr(GRBmodel *model, const char *attrname, int *valueP);
+int GRBsetintattr(GRBmodel *model, const char *attrname, int newvalue);
+int GRBgetintattrelement(GRBmodel *model, const char *attrname,
+                         int element, int *valueP);
+int GRBsetintattrelement(GRBmodel *model, const char *attrname,
+                         int element, int newvalue);
+int GRBgetintattrarray(GRBmodel *model, const char *attrname,
+                       int first, int len, int *values);
+int GRBsetintattrarray(GRBmodel *model, const char *attrname,
+                       int first, int len, int *newvalues);
+int GRBgetintattrlist(GRBmodel *model, const char *attrname,
+                      int len, int *ind, int *values);
+int GRBsetintattrlist(GRBmodel *model, const char *attrname,
+                      int len, int *ind, int *newvalues);
+
+
+int GRBgetdblattr(GRBmodel *model, const char *attrname, double *valueP);
+int GRBsetdblattr(GRBmodel *model, const char *attrname, double newvalue);
+
+int GRBgetdblattrelement(GRBmodel *model, const char *attrname,
+                         int element, double *valueP);
+int GRBsetdblattrelement(GRBmodel *model, const char *attrname,
+                         int element, double newvalue);
+int GRBgetdblattrarray(GRBmodel *model, const char *attrname,
+                       int first, int len, double *values);
+int GRBsetdblattrarray(GRBmodel *model, const char *attrname,
+                       int first, int len, double *newvalues);
+int GRBgetdblattrlist(GRBmodel *model, const char *attrname,
+                      int len, int *ind, double *values);
+int GRBsetdblattrlist(GRBmodel *model, const char *attrname,
+                      int len, int *ind, double *newvalues);
+
+
 int GRBupdatemodel(GRBmodel *model);
 const char* GRBgeterrormsg(GRBenv *env);
 int GRBoptimize(GRBmodel *model);
