@@ -1,8 +1,8 @@
 import cffi
 
-ffi = cffi.FFI()
+ffi = None
 
-ffi.cdef('''
+defs = '''
 typedef ... GRBenv;
 typedef ... GRBmodel;
 
@@ -75,11 +75,22 @@ int GRBsetdblattrlist(GRBmodel *model, const char *attrname,
 int GRBupdatemodel(GRBmodel *model);
 const char* GRBgeterrormsg(GRBenv *env);
 int GRBoptimize(GRBmodel *model);
-''')
+'''
 
-gurobi = ffi.verify('''
-    #include "gurobi_c.h"
-''',
-    libraries=['gurobi56'],
-    include_dirs=['/Library/gurobi563/mac64/include'],
-    library_dirs=['/Library/gurobi563/mac64/lib'])
+configs = [
+    ('', ''),
+    ('/Library/gurobi563/mac64/include', '/Library/gurobi563/mac64/lib'),
+]
+
+gurobi = None
+
+for config in configs:
+    try:
+        ffi = cffi.FFI()
+        ffi.cdef(defs)
+        gurobi = ffi.verify('#include "gurobi_c.h"',
+                            libraries=['gurobi56'],
+                            include_dirs=[config[0]],
+                            library_dirs=[config[1]])
+    except:
+        pass
