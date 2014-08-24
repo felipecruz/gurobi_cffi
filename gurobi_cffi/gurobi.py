@@ -72,6 +72,30 @@ def gurobi_env(log_file):
 def gurobi_free(env):
     gurobi.GRBfreeenv(env)
 
+class GurobiModel(object):
+    def __init__(self, env, model, len_vars):
+        self.env = env
+        self._model = model
+        self._len_vars = len_vars
+
+    def query_variable_attribute(self, _type_name, attrname, pos):
+        if _type_name == 'int':
+            return query_array_int_attribute_position(self.env, self._model,
+                                                      attrname,
+                                                      pos,
+                                                      self._len_vars)
+        elif _type_name == 'double':
+            return query_array_double_attribute_position(self.env, self._model,
+                                                         attrname,
+                                                         pos,
+                                                         self._len_vars)
+        else:
+            raise Exception("Unsupported type: {}".format(_type_name))
+
+    @property
+    def model(self):
+        return self._model
+
 
 class Gurobi(object):
     def __init__(self, log_file="gurobi.log"):
@@ -83,27 +107,29 @@ class Gurobi(object):
         if not l_ids == len(values):
             raise Exception("Invalid size of ids and values")
         self._len_vars = len(ids)
-        return new_model(self.env, name, ids, values)
+
+        return GurobiModel(self, new_model(self.env, name, ids, values),
+                           len(ids))
 
     def update(self, model):
-        update(self.env, model)
+        update(self.env, model.model)
 
     def add_constraint(self, model, indexes, values, obj, name,
                        constraint=GRB_EQUAL):
-        add_constraint(self.env, model, indexes, values, obj, name,
+        add_constraint(self.env, model.model, indexes, values, obj, name,
                        constraint)
 
     def query_constraint_attribute(self, model, _type_name, attrname, pos):
-        return self.query_variable_attribute(mode, _type_name, attrname, pos)
+        return self.query_variable_attribute(model.model, _type_name, attrname, pos)
 
     def query_variable_attribute(self, model, _type_name, attrname, pos):
         if _type_name == 'int':
-            return query_array_int_attribute_position(self.env, model,
+            return query_array_int_attribute_position(self.env, model.model,
                                                       attrname,
                                                       pos,
                                                       self._len_vars)
         elif _type_name == 'double':
-            return query_array_double_attribute_position(self.env, model,
+            return query_array_double_attribute_position(self.env, model.model,
                                                          attrname,
                                                          pos,
                                                          self._len_vars)
@@ -111,7 +137,7 @@ class Gurobi(object):
             raise Exception("Unsupported type: {}".format(_type_name))
 
     def optimize(self, model):
-        model_optimize(self.env, model)
+        model_optimize(self.env, model.model)
 
     def finish(self):
         gurobi_free(self.env)

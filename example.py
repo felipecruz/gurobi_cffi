@@ -12,9 +12,9 @@ if __name__ == "__main__":
 
     gurobi.optimize(model)
 
-    q1 = gurobi.query_variable_attribute(model, 'double', 'X', 0)
-    q2 = gurobi.query_variable_attribute(model, 'double', 'X', 1)
-    q3 = gurobi.query_variable_attribute(model, 'double', 'X', 2)
+    q1 = model.query_variable_attribute('double', 'X', 0)
+    q2 = model.query_variable_attribute('double', 'X', 1)
+    q3 = model.query_variable_attribute('double', 'X', 2)
 
     print("E1 flow: {}".format(q1))
     print("E2 flow: {}".format(q2))
