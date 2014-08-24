@@ -7,10 +7,10 @@ if __name__ == "__main__":
     gurobi = Gurobi()
     model = gurobi.new_model("MyExampleModel", ids, values)
 
-    gurobi.add_constraint(model, [0, 1, 2], [10, 10, 10], 60, "source1")
-    gurobi.add_constraint(model, [0, 1, 2], [10, 10, 10], 60, "sink1")
+    model.add_constraint([0, 1, 2], [10, 10, 10], 60, "source1")
+    model.add_constraint([0, 1, 2], [10, 10, 10], 60, "sink1")
 
-    gurobi.optimize(model)
+    model.optimize()
 
     q1 = model.query_variable_attribute('double', 'X', 0)
     q2 = model.query_variable_attribute('double', 'X', 1)
